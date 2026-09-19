@@ -356,7 +356,7 @@
     <div class="split-curtain-right"></div>
     
     <div class="large-wa-seal" id="waSeal">
-      <div class="normal-wa-text">WA</div>
+      <div class="normal-wa-text">AW</div>
       <div class="tap-text">TAP TO REVEAL</div>
     </div>
 
@@ -606,7 +606,7 @@
         particles.push({
           x: canvas.width / 2, y: canvas.height / 2,
           dx: (Math.random() - 0.5) * 18, dy: (Math.random() - 0.5) * 18,
-          color: colors[Math.floor(Math.random() * colors.length)],
+          color: colors[Math.color] || colors[Math.floor(Math.random() * colors.length)],
           size: Math.random() * 5 + 2, alpha: 1
         });
       }
