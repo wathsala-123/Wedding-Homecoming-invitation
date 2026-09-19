@@ -1,1 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Home Coming Invitation | Anuruddha & Wathsala</title>
 
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="💌 HOME COMING INVITATION | Anuruddha & Wathsala">
+  <meta property="og:description" content="We warmly invite you to celebrate our Home Coming! Tap to open your invitation.">
+  <meta property="og:image" content="https://wathsala-123.github.io/wedding-invitation/unnamed%20(2).webp">
+
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&family=Alex+Brush&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: #080808;
+      color: #2b2b2b;
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    audio { display: none; }
+
+    /* BACKGROUND OVERLAY */
+    .bg-fixed-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-image: url('unnamed (2).webp');
+      background-size: cover;
+      background-position: center;
+      filter: blur(14px) brightness(0.45);
+      transform: scale(1.1);
+      z-index: -2;
+    }
+
+    .bg-dark-layer {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(15, 15, 15, 0.75);
+      z-index: -1;
+    }
+
+    #fireworksCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* SLOW MOTION PETALS */
+    .petal {
+      position: fixed;
+      top: -20px;
+      background: rgba(212, 175, 55, 0.75);
+      border-radius: 10px 0 10px 0;
+      pointer-events: none;
+      animation: fall linear infinite;
+      z-index: 90;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+      100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* CURTAIN REVEAL OVERLAY */
+    .reveal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #0d0d0d;
+      cursor: pointer;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    .split-curtain-left, .split-curtain-right {
+      position: absolute;
+      top: 0; width: 50vw; height: 100vh;
+      background: #111111;
+      transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .split-curtain-left { left: 0; border-right: 1px solid rgba(212, 175, 55, 0.4); }
+    .split-curtain-right { right: 0; border-left: 1px solid rgba(212, 175, 55, 0.4); }
+
+    .reveal-overlay.open .split-curtain-left { transform: translateX(-100%); }
+    .reveal-overlay.open .split-curtain-right { transform: translateX(100%); }
+
+    /* RED SEAL WITH WHITE CAPITAL WA MONOGRAM */
+    .large-wa-seal {
+      position: relative;
+      z-index: 1001;
+      width: 160px; height: 160px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 25px rgba(220, 20, 60, 0.6), inset 0 0 15px rgba(0, 0, 0, 0.4);
+      transition: opacity 0.5s ease;
+      background: linear-gradient(135deg, #a71d2a, #68000d);
+      padding: 10px;
+    }
+
+    .normal-wa-text {
+      font-family: 'Cinzel', serif;
+      font-size: 65px;
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 2px;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    .tap-text { 
+      font-size: 9px; 
+      letter-spacing: 3px; 
+      font-weight: 700; 
+      color: #ffffff; 
+      margin-top: 4px; 
+    }
+
+    /* DYNAMIC GUEST NAME ON COVER OPENING */
+    .guest-opening-box {
+      position: absolute;
+      bottom: 60px;
+      z-index: 1001;
+      text-align: center;
+      padding: 10px 22px;
+      border: 1px solid rgba(212, 175, 55, 0.6);
+      border-radius: 20px;
+      background: rgba(20, 20, 20, 0.88);
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.35);
+      transition: opacity 0.5s ease;
+    }
+    .guest-opening-label { font-size: 10px; color: #b8860b; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+    .guest-opening-name { font-family: 'Cinzel', serif; font-size: 16px; color: #fff; font-weight: 700; margin-top: 2px; }
+
+    /* MAIN CONTAINER */
+    .main-container { width: 100%; max-width: 480px; padding: 20px 15px; z-index: 10; display: flex; flex-direction: column; align-items: center; perspective: 1000px; }
+
+    /* COVER CARD WITH VIDEO */
+    .cover-card {
+      width: 100%; background: rgba(20, 20, 20, 0.88);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 16px; padding: 15px; text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 25px;
+      overflow: hidden; backdrop-filter: blur(8px); color: #fff;
+    }
+
+    .cover-video-wrapper {
+      position: relative; width: 100%; height: 280px;
+      overflow: hidden; border-radius: 10px;
+      background: #000;
+    }
+
+    .cover-video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .open-card-btn-wrapper { margin-top: 15px; display: none; text-align: center; }
+    .btn-open-card {
+      background: linear-gradient(135deg, #d4af37, #b8860b);
+      color: #000; border: none; padding: 12px 28px; border-radius: 30px;
+      font-weight: 700; font-size: 13px; letter-spacing: 2px;
+      cursor: pointer; box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    }
+
+    /* INVITATION CARD */
+    .invitation-card {
+      width: 100%; background: #fdfbf7;
+      border: 2px solid #c5a059; border-radius: 12px;
+      padding: 30px 18px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      margin-bottom: 25px; position: relative; color: #5a4b38;
+      opacity: 0; 
+      transform: scale(0.1) rotate(720deg);
+      filter: blur(25px) brightness(2.5);
+      transition: transform 1.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.2s ease-out, filter 1.6s ease-out;
+      transform-origin: center center;
+      backface-visibility: hidden;
+    }
+    .invitation-card.reveal-active { 
+      opacity: 1; 
+      transform: scale(1) rotate(0deg);
+      filter: blur(0px) brightness(1);
+    }
+
+    .corner-floral-top { position: absolute; top: 8px; right: 8px; width: 90px; opacity: 0.85; }
+    .corner-floral-bottom { position: absolute; bottom: 8px; left: 8px; width: 90px; opacity: 0.85; transform: rotate(180deg); }
+
+    .card-monogram {
+      width: 75px; height: 75px; border: 1.5px solid #c5a059; border-radius: 50%;
+      margin: 0 auto 12px auto; display: flex; justify-content: center; align-items: center;
+      font-family: 'Cinzel', serif; font-size: 34px; color: #b8860b; font-weight: 700;
+      letter-spacing: -4px;
+    }
+
+    .card-parents { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; line-height: 1.6; color: #6b5a45; text-transform: uppercase; }
+    .card-request { font-size: 8.5px; font-weight: 700; letter-spacing: 1px; color: #7a6852; margin: 12px 0 8px 0; text-transform: uppercase; }
+    .card-guest-box { border-top: 1px solid #dcd1be; border-bottom: 1px solid #dcd1be; padding: 8px 0; margin: 8px 0; }
+    .card-guest-title { font-size: 11px; font-weight: 700; color: #8c7355; letter-spacing: 1px; font-family: 'Cinzel', serif; word-wrap: break-word; }
+
+    .card-grace { font-size: 8px; font-weight: 700; letter-spacing: 0.8px; color: #7a6852; margin-top: 10px; text-transform: uppercase; }
+
+    .card-couple { font-family: 'Alex Brush', cursive; font-size: 38px; color: #8c6d3b; margin: 8px 0; text-shadow: 0.5px 0.5px 0px #b8860b; }
+
+    .card-details-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; padding: 10px 0; }
+    .card-col { flex: 1; font-size: 9px; font-weight: 700; color: #5a4b38; }
+    .card-col-border { border-left: 1px solid #c5a059; border-right: 1px solid #c5a059; padding: 0 5px; }
+
+    .card-qr { width: 55px; height: 55px; margin: 10px auto 4px auto; }
+    .card-poruwa { font-size: 8.5px; font-weight: 700; color: #6b5a45; margin-top: 4px; }
+    .card-rsvp { font-size: 8.5px; font-weight: 700; color: #8c7355; margin-top: 6px; }
+
+    .btn-action {
+      width: 100%; background: linear-gradient(135deg, #b8860b, #d4af37);
+      color: white; border: none; padding: 12px; border-radius: 25px;
+      font-weight: 600; font-size: 12px; letter-spacing: 1px;
+      text-decoration: none; display: block; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+      cursor: pointer; text-align: center; margin-bottom: 25px;
+    }
+
+    /* CHEERS ANIMATION SECTION */
+    .cheers-section {
+      width: 100%; text-align: center; margin: 30px 0; opacity: 0;
+      transform: translateY(30px); transition: all 1s ease;
+    }
+    .cheers-section.active { opacity: 1; transform: translateY(0); }
+    .cheers-icon { font-size: 55px; display: inline-block; animation: cheersClink 1.8s infinite ease-in-out alternate; }
+    @keyframes cheersClink {
+      0% { transform: rotate(-12deg) scale(0.95); }
+      50% { transform: rotate(12deg) scale(1.1); }
+      100% { transform: rotate(-12deg) scale(0.95); }
+    }
+    .cheers-text { font-family: 'Cinzel', serif; font-size: 13px; color: #d4af37; letter-spacing: 2px; margin-top: 8px; }
+
+    /* TIMELINE SECTION */
+    .timeline-card, .rsvp-card, .location-card, .timer-card {
+      width: 100%; background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px; padding: 25px 18px; margin-bottom: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15); backdrop-filter: blur(6px); text-align: center;
+    }
+    .section-title { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 2px; color: #b8860b; margin-bottom: 22px; font-weight: 700; }
+
+    .timeline-wrapper { position: relative; padding: 10px 0; min-height: 200px; }
+    .timeline-line {
+      position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #d4af37;
+      transform: scaleY(0); transform-origin: top; transition: transform 1s ease;
+    }
+    .timeline-wrapper.active .timeline-line { transform: scaleY(1); }
+
+    .timeline-item {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 28px; opacity: 0; transition: all 0.8s ease;
+    }
+    .timeline-item.left-item { transform: translateX(-50px); }
+    .timeline-item.right-item { transform: translateX(50px); }
+    .timeline-item.show { opacity: 1; transform: translateX(0); }
+
+    .timeline-left { width: 44%; text-align: right; font-size: 12px; font-weight: 700; color: #b8860b; }
+    .timeline-right { width: 44%; text-align: left; font-size: 12px; color: #333; font-weight: 600; }
+    .timeline-dot { width: 12px; height: 12px; background: #b8860b; border-radius: 50%; z-index: 2; border: 2px solid #fff; }
+
+    /* HANDWRITTEN CURSIVE MESSAGE */
+    .cursive-message {
+      font-family: 'Alex Brush', cursive; font-size: 28px; color: #d4af37;
+      text-align: center; margin: 25px 10px; line-height: 1.4;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    /* LOCATION & RSVP */
+    .location-img { width: 100%; border-radius: 10px; margin-bottom: 15px; border: 1px solid #ddd; object-fit: cover; max-height: 250px; }
+    .rsvp-field { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 12px; }
+
+    .wa-direct-box {
+      margin-top: 10px; padding: 15px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; text-align: center;
+    }
+    .wa-person-label {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #15803d;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+    .wa-btn {
+      display: inline-block; background: #25d366; color: white; padding: 10px 18px;
+      border-radius: 20px; font-size: 11px; font-weight: 700; text-decoration: none; margin: 5px 2px 12px 2px;
+      box-shadow: 0 3px 10px rgba(37, 211, 102, 0.3);
+    }
+    .wa-btn:last-child { margin-bottom: 0; }
+
+    /* TIMER */
+    .timer-flex { display: flex; justify-content: space-around; }
+    .timer-unit span { font-size: 22px; font-weight: 700; color: #222; display: block; }
+    .timer-unit label { font-size: 8.5px; letter-spacing: 1px; color: #8b6508; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+  <canvas id="fireworksCanvas"></canvas>
+  <div class="bg-fixed-overlay"></div>
+  <div class="bg-dark-layer"></div>
+
+  <audio id="bgMusic" src="AUD-20260907-WA0042.mp3" loop></audio>
+
+  <div class="reveal-overlay" id="revealOverlay" onclick="triggerReveal()">
+    <div class="split-curtain-left"></div>
+    <div class="split-curtain-right"></div>
+    
+    <div class="large-wa-seal" id="waSeal">
+      <div class="normal-wa-text">WA</div>
+      <div class="tap-text">TAP TO REVEAL</div>
+    </div>
+
+    <div class="guest-opening-box" id="guestOpeningBox">
+      <div class="guest-opening-label">Special Invitation For</div>
+      <div class="guest-opening-name" id="guestOpeningName">Honored Guest</div>
+    </div>
+  </div>
+
+  <div class="main-container">
+
+    <div class="cover-card" id="coverCard">
+      <div class="cover-video-wrapper">
+        <video id="coupleVideo" class="cover-video" playsinline muted poster="unnamed (2).webp">
+          <!-- Repository එකේ ඇති Exact Video File Name එක යොදන්න -->
+          <source src="VID_20260919_12490.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div style="font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: #d4af37; margin-top: 15px; letter-spacing: 2px;">ANURUDDHA & WATHSALA</div>
+      <div style="font-size: 10px; letter-spacing: 3px; font-weight: 600; color: #ddd; margin-top: 5px;">HOME COMING • 06.12.2026</div>
+
+      <div class="open-card-btn-wrapper" id="openCardBtnWrapper">
+        <button class="btn-open-card" onclick="openInvitationWithFireworks()">✨ OPEN THE CARD ✨</button>
+      </div>
+    </div>
+
+    <div class="invitation-card" id="invitationCard">
+      <svg class="corner-floral-top" viewBox="0 0 100 100" fill="#c5a059"><path d="M10 10 Q 50 10 90 90 Q 10 50 10 10 Z"/></svg>
+      <svg class="corner-floral-bottom" viewBox="0 0 100 100" fill="#c5a059"><path d="M10 10 Q 50 10 90 90 Q 10 50 10 10 Z"/></svg>
+
+      <div class="card-monogram">AW</div>
+
+      <div class="card-parents">
+        MR. & MRS. AMARADASA VITHANAGE<br>
+        <span style="font-size: 8px; font-weight: 500;">TOGETHER WITH</span><br>
+        MR. & MRS. SARATH SENANAYAKE
+      </div>
+
+      <div class="card-request">REQUEST THE HONOUR OF THE PRESENCE OF</div>
+
+      <div class="card-guest-box">
+        <div class="card-guest-title" id="guestNameMain">MR. & MRS. / MR. / MRS. / MISS. / FAMILY</div>
+      </div>
+
+      <div class="card-grace">TO GRACE THE OCCASION OF THE HOME COMING<br>OF THEIR BELOVED CHILDREN</div>
+
+      <div class="card-couple">Anuruddha & Wathsala</div>
+
+      <div class="card-details-row">
+        <div class="card-col">
+          ON<br>SUNDAY<br><span style="font-size: 16px; color: #8c6d3b;">06<sup>TH</sup></span><br>DECEMBER 2026
+        </div>
+        <div class="card-col card-col-border">
+          AT<br><strong style="font-size: 10px; color: #6b5a45;">PARADUWA HOLIDAY RESORT</strong><br>MATARA RD, AKURESSA
+        </div>
+        <div class="card-col">
+          FROM<br>06.30 P.M.<br>TO<br>10.30 P.M.
+        </div>
+      </div>
+
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=Paraduwa+Holiday+Resort+Akuressa" class="card-qr" alt="QR">
+
+      <div class="card-rsvp" style="margin-top: 10px;">RSVP (REGRETS ONLY)<br>AMARADASA : 0713024047</div>
+    </div>
+
+    <button class="btn-action" onclick="saveCardAsImage()">💾 SAVE INVITATION CARD</button>
+
+    <div class="timer-card">
+      <div class="section-title">COUNTDOWN TO OUR HOME COMING</div>
+      <div class="timer-flex">
+        <div class="timer-unit"><span id="days">00</span><label>Days</label></div>
+        <div class="timer-unit"><span id="hours">00</span><label>Hours</label></div>
+        <div class="timer-unit"><span id="minutes">00</span><label>Mins</label></div>
+        <div class="timer-unit"><span id="seconds">00</span><label>Secs</label></div>
+      </div>
+    </div>
+
+    <div class="cheers-section" id="cheersSection">
+      <div class="cheers-icon">🥂</div>
+      <div class="cheers-text">LET'S CELEBRATE TOGETHER!</div>
+    </div>
+
+    <div class="timeline-card">
+      <div class="section-title">EVENT TIMELINE</div>
+      <div class="timeline-wrapper" id="timelineWrapper">
+        <div class="timeline-line"></div>
+        <div class="timeline-item left-item" id="time1">
+          <div class="timeline-left">06:30 PM</div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-right">Guest Arrival</div>
+        </div>
+        <div class="timeline-item right-item" id="time2">
+          <div class="timeline-left">10:30 PM</div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-right">Event Conclusion</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="location-card">
+      <div class="section-title">HOME COMING VENUE</div>
+      <img src="unnamed (2).webp" alt="Paraduwa Holiday Resort" class="location-img">
+      <a href="https://maps.google.com/?q=Paraduwa+Holiday+Resort+Akuressa" target="_blank" class="btn-action" style="margin-bottom:0;">
+        📍 OPEN IN GOOGLE MAPS
+      </a>
+    </div>
+
+    <div class="cursive-message">
+      We warmly look forward to your gracious presence on our special day! ❤️
+    </div>
+
+    <div class="rsvp-card">
+      <div class="section-title">CONFIRM YOUR ATTENDANCE</div>
+      
+      <div style="font-size: 11px; color: #555; margin-bottom: 12px;">
+        Please confirm your attendance directly via WhatsApp message:
+      </div>
+
+      <input type="text" id="rsvpInputName" class="rsvp-field" placeholder="Enter Your Full Name / Family Name" oninput="updateWhatsAppLinks()">
+
+      <select id="rsvpGuestCount" class="rsvp-field" onchange="updateWhatsAppLinks()">
+        <option value="1 Guest">Number of Guests: 1 Person</option>
+        <option value="2 Guests">Number of Guests: 2 Persons</option>
+        <option value="3 Guests">Number of Guests: 3 Persons</option>
+        <option value="4 Guests">Number of Guests: 4 Persons</option>
+        <option value="5+ Guests (Family)">Number of Guests: 5+ Persons / Family</option>
+      </select>
+
+      <div class="wa-direct-box">
+        <div class="wa-person-label">Anuruddha Vithanage</div>
+        <a id="waBtn2" href="https://wa.me/94702661909" target="_blank" class="wa-btn">💬 Confirm to Anuruddha</a>
+
+        <div class="wa-person-label">Wathsala Senanayake</div>
+        <a id="waBtn1" href="https://wa.me/94765563393" target="_blank" class="wa-btn">💬 Confirm to Wathsala</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentGuestName = "";
+
+    function setGuestName() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let guestName = urlParams.get('name');
+      if (guestName) {
+        currentGuestName = guestName;
+        document.getElementById('guestNameMain').innerText = guestName;
+        document.getElementById('guestOpeningName').innerText = guestName;
+        document.getElementById('rsvpInputName').value = guestName;
+      } else {
+        document.getElementById('guestOpeningBox').style.display = 'none';
+      }
+      updateWhatsAppLinks();
+    }
+
+    function updateWhatsAppLinks() {
+      const name = document.getElementById('rsvpInputName').value || currentGuestName || "Guest";
+      const count = document.getElementById('rsvpGuestCount').value || "1 Guest";
+      
+      const text = encodeURIComponent(`Hi, I am ${name}. I confirm my attendance for the Home Coming celebration (${count})! 🌸💐`);
+      
+      document.getElementById('waBtn1').href = `https://wa.me/94765563393?text=${text}`;
+      document.getElementById('waBtn2').href = `https://wa.me/94702661909?text=${text}`;
+    }
+
+    function triggerReveal() {
+      const overlay = document.getElementById('revealOverlay');
+      const seal = document.getElementById('waSeal');
+      const guestBox = document.getElementById('guestOpeningBox');
+      const music = document.getElementById('bgMusic');
+      const video = document.getElementById('coupleVideo');
+
+      seal.style.opacity = '0';
+      guestBox.style.opacity = '0';
+      overlay.classList.add('open');
+      if(music) { music.play().catch(()=>{}); }
+
+      setTimeout(() => {
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+          overlay.style.visibility = 'hidden';
+          if (video) {
+            video.play().catch(()=>{});
+          }
+          document.getElementById('openCardBtnWrapper').style.display = 'block';
+          startContinuousPetals();
+        }, 600);
+      }, 600);
+    }
+
+    function openInvitationWithFireworks() {
+      launchFireworks();
+      const card = document.getElementById('invitationCard');
+      setTimeout(() => {
+        card.classList.add('reveal-active');
+      }, 200);
+    }
+
+    function launchFireworks() {
+      const canvas = document.getElementById('fireworksCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let particles = [];
+      const colors = ['#d4af37', '#ffffff', '#ffdf00', '#ff4500', '#ffd700'];
+
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: canvas.width / 2, y: canvas.height / 2,
+          dx: (Math.random() - 0.5) * 18, dy: (Math.random() - 0.5) * 18,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 5 + 2, alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, index) => {
+          p.x += p.dx; p.y += p.dy; p.alpha -= 0.01;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color; ctx.globalAlpha = Math.max(p.alpha, 0); ctx.fill();
+          if (p.alpha <= 0) particles.splice(index, 1);
+        });
+        if (particles.length > 0) requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    function startContinuousPetals() {
+      setInterval(() => {
+        const petal = document.createElement('div');
+        petal.classList.add('petal');
+        petal.style.left = Math.random() * 100 + 'vw';
+        petal.style.width = Math.random() * 6 + 6 + 'px';
+        petal.style.height = Math.random() * 8 + 8 + 'px';
+        petal.style.animationDuration = Math.random() * 4 + 6 + 's';
+        document.body.appendChild(petal);
+
+        setTimeout(() => { petal.remove(); }, 10000);
+      }, 550);
+    }
+
+    let timelineTriggered = false;
+    window.addEventListener('scroll', () => {
+      const cheers = document.getElementById('cheersSection');
+      const timeline = document.getElementById('timelineWrapper');
+
+      if (cheers.getBoundingClientRect().top < window.innerHeight / 1.2) {
+        cheers.classList.add('active');
+      }
+
+      if (!timelineTriggered && timeline.getBoundingClientRect().top < window.innerHeight / 1.2) {
+        timelineTriggered = true;
+        timeline.classList.add('active');
+        
+        setTimeout(() => { document.getElementById('time1').classList.add('show'); }, 300);
+        setTimeout(() => { document.getElementById('time2').classList.add('show'); }, 900);
+      }
+    });
+
+    function saveCardAsImage() {
+      const card = document.getElementById('invitationCard');
+      html2canvas(card).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Anuruddha_Wathsala_Homecoming_Card.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+
+    const homeComingDate = new Date("Dec 6, 2026 18:30:00").getTime();
+    setInterval(() => {
+      const now = new Date().getTime();
+      const distance = homeComingDate - now;
+      if (distance > 0) {
+        document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+        document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000);
+      }
+    }, 1000);
+
+    window.onload = setGuestName;
+  </script>
+
+</body>
+</html>
