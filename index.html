@@ -157,7 +157,7 @@
     /* MAIN CONTAINER */
     .main-container { width: 100%; max-width: 480px; padding: 20px 15px; z-index: 10; display: flex; flex-direction: column; align-items: center; perspective: 1000px; }
 
-    /* COVER CARD WITH CORRECT UPLOADED VIDEO */
+    /* COVER CARD WITH PLAYING VIDEO */
     .cover-card {
       width: 100%; background: rgba(18, 18, 18, 0.92);
       border: 1px solid rgba(128, 0, 32, 0.5);
@@ -189,7 +189,7 @@
     }
     .btn-open-card:active { transform: scale(0.96); }
 
-    /* INVITATION CARD WITH ELEGANT MAROON / BURGUNDY ACCENTS */
+    /* INVITATION CARD */
     .invitation-card {
       width: 100%; background: #fffcfa;
       border: 2px solid #800020; border-radius: 12px;
@@ -256,7 +256,7 @@
     }
     .cheers-text { font-family: 'Cinzel', serif; font-size: 13px; color: #800020; letter-spacing: 2px; margin-top: 8px; font-weight: 700; }
 
-    /* TIMELINE SECTION & CARDS */
+    /* TIMELINE CARDS - ENHANCED 4 STEPS DESIGN */
     .timeline-card, .rsvp-card, .location-card, .timer-card {
       width: 100%; background: rgba(255, 255, 255, 0.96);
       border-radius: 16px; padding: 25px 18px; margin-bottom: 25px;
@@ -265,23 +265,42 @@
     }
     .section-title { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 2px; color: #800020; margin-bottom: 22px; font-weight: 700; }
 
-    /* TIMELINE DESIGN */
-    .timeline-wrapper { position: relative; padding: 10px 0; min-height: 140px; }
+    /* RICH 4-STEP TIMELINE LAYOUT */
+    .timeline-wrapper { position: relative; padding: 15px 0; }
     .timeline-line {
       position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #800020;
-      transform: scaleY(0); transform-origin: top; transition: transform 1s ease;
+      transform: scaleY(0); transform-origin: top; transition: transform 1.2s ease;
+      margin-left: -1px;
     }
     .timeline-wrapper.active .timeline-line { transform: scaleY(1); }
 
     .timeline-item {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 25px; opacity: 0; transition: all 0.8s ease;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 30px; opacity: 0; transition: all 0.8s ease;
+      position: relative;
     }
+    .timeline-item:last-child { margin-bottom: 10px; }
     .timeline-item.show { opacity: 1; transform: translateY(0) !important; }
 
-    .timeline-left { width: 44%; text-align: right; font-size: 13px; font-weight: 700; color: #800020; }
-    .timeline-right { width: 44%; text-align: left; font-size: 13px; color: #222; font-weight: 600; }
-    .timeline-dot { width: 12px; height: 12px; background: #800020; border-radius: 50%; z-index: 2; border: 2px solid #fff; box-shadow: 0 0 5px rgba(128, 0, 32, 0.4); }
+    .timeline-time { 
+      width: 42%; text-align: right; font-family: 'Cinzel', serif; 
+      font-size: 13px; font-weight: 700; color: #800020; padding-right: 12px; 
+      line-height: 1.2;
+    }
+    .timeline-dot { 
+      width: 14px; height: 14px; background: #800020; border-radius: 50%; 
+      z-index: 2; border: 3px solid #fff; box-shadow: 0 0 8px rgba(128, 0, 32, 0.5); 
+      margin-top: 1px; flex-shrink: 0;
+    }
+    .timeline-content { 
+      width: 42%; text-align: left; padding-left: 12px; 
+    }
+    .timeline-title { 
+      font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #222; margin-bottom: 3px; 
+    }
+    .timeline-desc { 
+      font-size: 10px; color: #666; font-weight: 500; line-height: 1.35; 
+    }
 
     /* HANDWRITTEN CURSIVE MESSAGE */
     .cursive-message {
@@ -325,8 +344,12 @@
   <div class="bg-fixed-overlay"></div>
   <div class="bg-dark-layer"></div>
 
-  <!-- AUDIO SOURCE UPDATED FROM GITHUB REPO SCREENSHOT -->
-  <audio id="bgMusic" src="AUD-20260907-WA0042(1).mp3" loop></audio>
+  <!-- DYNAMIC MULTI-SOURCE AUDIO FOR GUARANTEED PLAYBACK -->
+  <audio id="bgMusic" preload="auto" loop>
+    <source src="AUD-20260907-WA0042(1).mp3" type="audio/mpeg">
+    <source src="AUD-20260907-WA0042%281%29.mp3" type="audio/mpeg">
+    <source src="AUD-20260907-WA0042.mp3" type="audio/mpeg">
+  </audio>
 
   <div class="reveal-overlay" id="revealOverlay" onclick="triggerReveal()">
     <div class="split-curtain-left"></div>
@@ -349,7 +372,6 @@
     <div class="cover-card" id="coverCard">
       <div class="cover-video-wrapper">
         <video id="coupleVideo" class="cover-video" playsinline muted loop autoplay poster="unnamed (2).webp">
-          <!-- VIDEO SOURCE UPDATED FROM GITHUB REPO SCREENSHOT -->
           <source src="VID_20260919_124904.mp4" type="video/mp4">
         </video>
       </div>
@@ -417,20 +439,48 @@
       <div class="cheers-text">LET'S CELEBRATE TOGETHER!</div>
     </div>
 
+    <!-- ELEGANT 4-ITEM TIMELINE -->
     <div class="timeline-card">
       <div class="section-title">EVENT TIMELINE</div>
       <div class="timeline-wrapper" id="timelineWrapper">
         <div class="timeline-line"></div>
+        
         <div class="timeline-item" id="time1" style="transform: translateY(20px);">
-          <div class="timeline-left">06:30 PM</div>
+          <div class="timeline-time">06:30 PM</div>
           <div class="timeline-dot"></div>
-          <div class="timeline-right">Guest Arrival</div>
+          <div class="timeline-content">
+            <div class="timeline-title">Welcome</div>
+            <div class="timeline-desc">Greeting our loved ones with warm smiles.</div>
+          </div>
         </div>
+
         <div class="timeline-item" id="time2" style="transform: translateY(20px);">
-          <div class="timeline-left">10:30 PM</div>
+          <div class="timeline-time">07:30 PM</div>
           <div class="timeline-dot"></div>
-          <div class="timeline-right">Event Conclusion</div>
+          <div class="timeline-content">
+            <div class="timeline-title">Grand Entry</div>
+            <div class="timeline-desc">Welcoming the newlywed couple to the floor.</div>
+          </div>
         </div>
+
+        <div class="timeline-item" id="time3" style="transform: translateY(20px);">
+          <div class="timeline-time">08:30 PM</div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">Dinner Time</div>
+            <div class="timeline-desc">Feasting and celebrating with family and friends.</div>
+          </div>
+        </div>
+
+        <div class="timeline-item" id="time4" style="transform: translateY(20px);">
+          <div class="timeline-time">10:30 PM</div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">Farewell</div>
+            <div class="timeline-desc">Ending the evening with beautiful memories.</div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -501,20 +551,26 @@
       document.getElementById('waBtn2').href = `https://wa.me/94702661909?text=${text}`;
     }
 
+    function playAudioSafe() {
+      const music = document.getElementById('bgMusic');
+      if (music) {
+        music.play().catch(function(error) {
+          console.log("Audio autoplay prevented, retrying on interaction.");
+        });
+      }
+    }
+
     function triggerReveal() {
       const overlay = document.getElementById('revealOverlay');
       const seal = document.getElementById('waSeal');
       const guestBox = document.getElementById('guestOpeningBox');
-      const music = document.getElementById('bgMusic');
       const video = document.getElementById('coupleVideo');
 
       seal.style.opacity = '0';
       guestBox.style.opacity = '0';
       overlay.classList.add('open');
       
-      if(music) { 
-        music.play().catch(()=>{}); 
-      }
+      playAudioSafe();
 
       setTimeout(() => {
         overlay.style.opacity = '0';
@@ -529,6 +585,7 @@
     }
 
     function openInvitationWithFireworks() {
+      playAudioSafe();
       launchFireworks();
       const card = document.getElementById('invitationCard');
       setTimeout(() => {
@@ -594,8 +651,10 @@
         timelineTriggered = true;
         timeline.classList.add('active');
         
-        setTimeout(() => { document.getElementById('time1').classList.add('show'); }, 300);
-        setTimeout(() => { document.getElementById('time2').classList.add('show'); }, 800);
+        setTimeout(() => { document.getElementById('time1').classList.add('show'); }, 200);
+        setTimeout(() => { document.getElementById('time2').classList.add('show'); }, 500);
+        setTimeout(() => { document.getElementById('time3').classList.add('show'); }, 800);
+        setTimeout(() => { document.getElementById('time4').classList.add('show'); }, 1100);
       }
     });
 
